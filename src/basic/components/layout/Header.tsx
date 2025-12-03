@@ -1,19 +1,17 @@
-import type { CartItem } from "../../../types";
-
 interface HeaderProps {
   isAdmin: boolean;
-  setIsAdmin: (value: boolean) => void;
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
+  onAdminToggle: () => void;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
   hasCartItems: boolean;
   totalItemCount: number;
 }
 
 export function Header({
   isAdmin,
-  setIsAdmin,
-  searchTerm,
-  setSearchTerm,
+  onAdminToggle,
+  searchValue,
+  onSearchChange,
   hasCartItems,
   totalItemCount,
 }: HeaderProps) {
@@ -28,8 +26,8 @@ export function Header({
               <div className="ml-8 flex-1 max-w-md">
                 <input
                   type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="상품 검색..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                 />
@@ -38,7 +36,7 @@ export function Header({
           </div>
           <nav className="flex items-center space-x-4">
             <button
-              onClick={() => setIsAdmin(!isAdmin)}
+              onClick={onAdminToggle}
               className={`px-3 py-1.5 text-sm rounded transition-colors ${
                 isAdmin
                   ? "bg-gray-800 text-white"

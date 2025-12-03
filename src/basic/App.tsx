@@ -36,9 +36,9 @@ export function App() {
       />
       <Header
         isAdmin={isAdmin}
-        setIsAdmin={setIsAdmin}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        onAdminToggle={() => setIsAdmin((prev) => !prev)}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
         hasCartItems={cart.length > 0}
         totalItemCount={totalItemCount}
       />
