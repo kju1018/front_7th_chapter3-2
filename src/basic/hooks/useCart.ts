@@ -24,7 +24,7 @@
 // - getRemainingStock: 재고 확인 함수 -
 // - clearCart: 장바구니 비우기 함수
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CartItem, Coupon, Product, ProductWithUI } from "../../types";
 import {
   calculateCartTotal,
@@ -151,14 +151,30 @@ export function useCart({
     setSelectedCoupon(null);
   }, []);
 
+  const clearSelectedCouponByCode = useCallback(
+    (code: string) => {
+      if (selectedCoupon?.code === code) {
+        setSelectedCoupon(null);
+      }
+    },
+    [selectedCoupon]
+  );
+
+  // 파생 상태: 장바구니 총 아이템 개수
+  const totalItemCount = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
+  }, [cart]);
+
   return {
     value: cart,
     selectedCoupon: selectedCoupon,
+    totalItemCount: totalItemCount,
     add: addToCart,
     remove: removeFromCart,
     updateQuantity: updateQuantity,
     apply: applyCoupon,
     clearCart: clearCart,
     clearSelectedCoupon: clearSelectedCoupon,
+    clearSelectedCouponByCode: clearSelectedCouponByCode,
   };
 }

@@ -24,6 +24,7 @@ import {
   calculateItemTotal,
   getRemainingStock,
 } from "./models/cart";
+import { useCoupons } from "./hooks/useCoupons";
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -53,16 +54,11 @@ const App = () => {
     onMessage: addNotification,
   });
 
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem("coupons");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return initialCoupons;
-      }
-    }
-    return initialCoupons;
+  const coupons = useCoupons({
+    onMessage: addNotification,
+    onDeleteSelectedCoupon: (deletedCode) => {
+      cart.clearSelectedCouponByCode(deletedCode); // cart가 책임지는 로직
+    },
   });
 
   const formatPrice = (price: number, productId?: string): string => {
@@ -80,19 +76,12 @@ const App = () => {
     return `₩${price.toLocaleString()}`;
   };
 
-  const [totalItemCount, setTotalItemCount] = useState(0);
-
-  useEffect(() => {
-    const count = cart.value.reduce((sum, item) => sum + item.quantity, 0);
-    setTotalItemCount(count);
-  }, [cart]);
-
   useEffect(() => {
     localStorage.setItem("products", JSON.stringify(products.value));
   }, [products]);
 
   useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons.values));
+    localStorage.setItem("coupons", JSON.stringify(coupons.value));
   }, [coupons]);
 
   useEffect(() => {
@@ -109,6 +98,7 @@ const App = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm]);
+
   const completeOrder = useCallback(() => {
     const orderNumber = `ORD-${Date.now()}`;
     addNotification(
@@ -117,30 +107,6 @@ const App = () => {
     );
     cart.clearCart();
   }, [addNotification]);
-
-  const addCoupon = useCallback(
-    (newCoupon: Coupon) => {
-      const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
-      if (existingCoupon) {
-        addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
-        return;
-      }
-      setCoupons((prev) => [...prev, newCoupon]);
-      addNotification("쿠폰이 추가되었습니다.", "success");
-    },
-    [coupons, addNotification]
-  );
-
-  const deleteCoupon = useCallback(
-    (couponCode: string) => {
-      setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
-      if (cart.selectedCoupon?.code === couponCode) {
-        cart.clearSelectedCoupon();
-      }
-      addNotification("쿠폰이 삭제되었습니다.", "success");
-    },
-    [cart.selectedCoupon, addNotification]
-  );
 
   const totals = calculateCartTotal(cart.value, cart.selectedCoupon);
 
@@ -156,7 +122,7 @@ const App = () => {
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         hasCartItems={cart.value.length > 0}
-        totalItemCount={totalItemCount}
+        totalItemCount={cart.totalItemCount}
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
