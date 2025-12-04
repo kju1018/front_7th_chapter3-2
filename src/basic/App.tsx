@@ -5,7 +5,7 @@
 // 3. 조건부 렌더링으로 CartPage 또는 AdminPage 표시
 // 4. 상태 관리는 각 페이지 컴포넌트에서 처리 (App은 라우팅만 담당)
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Header } from "./components/layout/Header";
 import Notifications from "./components/Notifications";
 import { AdminPage } from "./pages/Admin/AdminPage";
@@ -18,17 +18,18 @@ import {
 } from "./models/cart";
 import { useCoupons } from "./hooks/useCoupons";
 import { useNotifications } from "./hooks/useNotifications";
+import { useDebounce } from "./utils/hooks/useDebounce";
+import { filterProductsBySearchTerm } from "./models/product";
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const { notifications, addNotification, setNotifications } =
     useNotifications();
 
   const products = useProducts({
-    searchTerm,
     onMessage: addNotification,
   });
 
@@ -59,13 +60,6 @@ const App = () => {
     return `₩${price.toLocaleString()}`;
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
   const completeOrder = useCallback(() => {
     const orderNumber = `ORD-${Date.now()}`;
     addNotification(
@@ -76,6 +70,11 @@ const App = () => {
   }, [addNotification]);
 
   const totals = calculateCartTotal(cart.value, cart.selectedCoupon);
+
+  const filteredProducts = useMemo(
+    () => filterProductsBySearchTerm(products.value, debouncedSearchTerm),
+    [products.value, debouncedSearchTerm]
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,7 +107,7 @@ const App = () => {
                     총 {products.value.length}개 상품
                   </div>
                 </div>
-                {products.filtered.length === 0 ? (
+                {filteredProducts.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500">
                       "{debouncedSearchTerm}"에 대한 검색 결과가 없습니다.
@@ -116,7 +115,7 @@ const App = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products.filtered.map((product) => {
+                    {filteredProducts.map((product) => {
                       const remainingStock = getRemainingStock(
                         product,
                         cart.value

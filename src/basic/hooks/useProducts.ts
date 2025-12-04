@@ -22,10 +22,8 @@ import {
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 
 export const useProducts = ({
-  searchTerm,
   onMessage,
 }: {
-  searchTerm: string;
   onMessage?: (message: string, type?: "error" | "success" | "warning") => void;
 }) => {
   const [products, setProducts] = useLocalStorage<ProductWithUI[]>(
@@ -60,11 +58,8 @@ export const useProducts = ({
     [onMessage]
   );
 
-  const filteredProducts = filterProductsBySearchTerm(products, searchTerm);
-
   return {
     value: products,
-    filtered: filteredProducts,
     add: addProduct,
     update: updateProduct,
     delete: deleteProduct,
