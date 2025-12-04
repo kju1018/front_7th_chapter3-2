@@ -77,12 +77,11 @@ export function useCart({
 
       onMessage("장바구니에 담았습니다", "success");
     },
-    [cart, onMessage]
+    [cart, onMessage, getRemainingStock]
   );
 
   const removeFromCart = useCallback((productId: string) => {
-    const newCart = removeItemFromCart(cart, productId);
-    setCart(newCart);
+    setCart(prevCart => removeItemFromCart(prevCart, productId));
   }, []);
 
   const updateQuantity = useCallback(
