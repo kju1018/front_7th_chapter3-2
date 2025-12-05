@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { CartItem, Coupon, ProductWithUI } from "../../../types";
 import { ProductList } from "./components/ProductList";
 import { CartSection } from "./components/CartSection";
@@ -13,6 +14,7 @@ interface ShopPageProps {
     updateQuantity: (productId: string, quantity: number) => void;
     apply: (coupon: Coupon) => void;
     clearSelectedCoupon: () => void;
+    clearCart: () => void;
     selectedCoupon: Coupon | null;
   };
   coupons: {
@@ -22,7 +24,10 @@ interface ShopPageProps {
     totalBeforeDiscount: number;
     totalAfterDiscount: number;
   };
-  completeOrder: () => void;
+  addNotification: (
+    message: string,
+    type: "error" | "success" | "warning"
+  ) => void;
 }
 
 export function ShopPage({
@@ -32,8 +37,17 @@ export function ShopPage({
   cart,
   coupons,
   totals,
-  completeOrder,
+  addNotification,
 }: ShopPageProps) {
+  const completeOrder = useCallback(() => {
+    const orderNumber = `ORD-${Date.now()}`;
+    addNotification(
+      `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
+      "success"
+    );
+    cart.clearCart();
+  }, [addNotification, cart]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <div className="lg:col-span-3">

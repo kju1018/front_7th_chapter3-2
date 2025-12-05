@@ -5,7 +5,7 @@
 // 3. 조건부 렌더링으로 CartPage 또는 AdminPage 표시
 // 4. 상태 관리는 각 페이지 컴포넌트에서 처리 (App은 라우팅만 담당)
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Header } from "./components/layout/Header";
 import Notifications from "./components/Notifications";
 import { AdminPage } from "./pages/Admin/AdminPage";
@@ -41,15 +41,6 @@ const App = () => {
       cart.clearSelectedCouponByCode(deletedCode); // cart가 책임지는 로직
     },
   });
-
-  const completeOrder = useCallback(() => {
-    const orderNumber = `ORD-${Date.now()}`;
-    addNotification(
-      `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
-      "success"
-    );
-    cart.clearCart();
-  }, [addNotification]);
 
   const totals = calculateCartTotal(cart.value, cart.selectedCoupon);
 
@@ -88,7 +79,7 @@ const App = () => {
             cart={cart}
             coupons={coupons}
             totals={totals}
-            completeOrder={completeOrder}
+            addNotification={addNotification}
           />
         )}
       </main>
