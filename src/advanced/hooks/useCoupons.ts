@@ -8,10 +8,10 @@
 // - addCoupon: 새 쿠폰 추가
 // - removeCoupon: 쿠폰 삭제
 
+import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { Coupon } from "../../types";
-import { initialCoupons } from "../constant";
-import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import { couponsAtom } from "../atoms";
 import {
   addCouponToList,
   findCouponByCode,
@@ -25,10 +25,7 @@ export function useCoupons({
   onMessage: (message: string, type: "error" | "success" | "warning") => void;
   onDeleteSelectedCoupon: (code: string) => void;
 }) {
-  const [coupons, setCoupons] = useLocalStorage<Coupon[]>(
-    "coupons",
-    initialCoupons
-  );
+  const [coupons, setCoupons] = useAtom(couponsAtom);
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
@@ -40,7 +37,7 @@ export function useCoupons({
       setCoupons((prev) => addCouponToList(prev, newCoupon));
       onMessage("쿠폰이 추가되었습니다.", "success");
     },
-    [coupons, onMessage]
+    [coupons, setCoupons, onMessage]
   );
 
   const deleteCoupon = useCallback(
@@ -49,7 +46,7 @@ export function useCoupons({
       onDeleteSelectedCoupon(couponCode);
       onMessage("쿠폰이 삭제되었습니다.", "success");
     },
-    [onDeleteSelectedCoupon, onMessage]
+    [setCoupons, onDeleteSelectedCoupon, onMessage]
   );
 
   return {
