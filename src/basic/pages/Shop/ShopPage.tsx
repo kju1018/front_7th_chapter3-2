@@ -1,6 +1,5 @@
 import { CartItem, Coupon, ProductWithUI } from "../../../types";
 import { ProductList } from "./components/ProductList";
-import { formatUserPrice } from "../../utils/formatters";
 import { CartSection } from "./components/CartSection";
 
 interface ShopPageProps {
@@ -44,7 +43,6 @@ export function ShopPage({
           debouncedSearchTerm={debouncedSearchTerm}
           cart={cart.value}
           addToCart={cart.add}
-          formatPrice={formatUserPrice}
         />
       </div>
 

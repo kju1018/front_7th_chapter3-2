@@ -12,7 +12,7 @@ import { AdminPage } from "./pages/Admin/AdminPage";
 import { ShopPage } from "./pages/Shop/ShopPage";
 import { useProducts } from "./hooks/useProducts";
 import { useCart } from "./hooks/useCart";
-import { calculateCartTotal, getRemainingStock } from "./models/cart";
+import { calculateCartTotal } from "./models/cart";
 import { useCoupons } from "./hooks/useCoupons";
 import { useNotifications } from "./hooks/useNotifications";
 import { useDebounce } from "./utils/hooks/useDebounce";
