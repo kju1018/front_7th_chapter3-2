@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai";
-import { ProductWithUI } from "../../../../types";
 import { getRemainingStock } from "../../../models/cart";
 import { ProductCard } from "./ProductCard";
 import { cartAtom, productsAtom } from "../../../atoms";

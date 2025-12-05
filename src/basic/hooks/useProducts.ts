@@ -15,7 +15,6 @@ import { ProductWithUI } from "../../types";
 import { initialProducts } from "../constant";
 import {
   addProductToList,
-  filterProductsBySearchTerm,
   removeProductFromList,
   updateProductInList,
 } from "../models/product";

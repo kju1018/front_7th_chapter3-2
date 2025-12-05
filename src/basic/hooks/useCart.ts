@@ -25,7 +25,7 @@
 // - clearCart: 장바구니 비우기 함수
 
 import { useCallback, useMemo, useState } from "react";
-import { CartItem, Coupon, Product, ProductWithUI } from "../../types";
+import { CartItem, Coupon, ProductWithUI } from "../../types";
 import {
   calculateCartTotal,
   getRemainingStock,
@@ -81,7 +81,7 @@ export function useCart({
   );
 
   const removeFromCart = useCallback((productId: string) => {
-    setCart(prevCart => removeItemFromCart(prevCart, productId));
+    setCart((prevCart) => removeItemFromCart(prevCart, productId));
   }, []);
 
   const updateQuantity = useCallback(

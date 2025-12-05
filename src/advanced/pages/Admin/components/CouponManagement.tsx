@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { PlusIcon } from "../../../components/icons";
-import { Coupon } from "../../../../types";
 import { useCouponForm } from "../hooks/useCouponForm";
 import { CouponForm } from "./CouponForm";
 import { CouponCard } from "./CouponCard";
