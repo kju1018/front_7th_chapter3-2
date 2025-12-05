@@ -12,6 +12,11 @@ import { useCallback } from "react";
 import { Coupon } from "../../types";
 import { initialCoupons } from "../constant";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import {
+  addCouponToList,
+  findCouponByCode,
+  removeCouponFromList,
+} from "../models/coupon";
 
 export function useCoupons({
   onMessage,
@@ -27,12 +32,12 @@ export function useCoupons({
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
-      const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
+      const existingCoupon = findCouponByCode(coupons, newCoupon.code);
       if (existingCoupon) {
         onMessage("이미 존재하는 쿠폰 코드입니다.", "error");
         return;
       }
-      setCoupons((prev) => [...prev, newCoupon]);
+      setCoupons((prev) => addCouponToList(prev, newCoupon));
       onMessage("쿠폰이 추가되었습니다.", "success");
     },
     [coupons, onMessage]
@@ -40,11 +45,11 @@ export function useCoupons({
 
   const deleteCoupon = useCallback(
     (couponCode: string) => {
-      setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
+      setCoupons((prev) => removeCouponFromList(prev, couponCode));
       onDeleteSelectedCoupon(couponCode);
       onMessage("쿠폰이 삭제되었습니다.", "success");
     },
-    [coupons, onDeleteSelectedCoupon, onMessage]
+    [onDeleteSelectedCoupon, onMessage]
   );
 
   return {
