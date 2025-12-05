@@ -1,19 +1,18 @@
+import { useAtomValue } from "jotai";
 import { ProductWithUI } from "../../../../types";
 import { ProductTable } from "./ProductTable";
+import { productsAtom } from "../../../atoms";
 
 interface ProductListProps {
-  products: ProductWithUI[];
   onEdit: (product: ProductWithUI) => void;
   onDelete: (id: string) => void;
   onAdd: () => void;
 }
 
-export const ProductList = ({
-  products,
-  onEdit,
-  onDelete,
-  onAdd,
-}: ProductListProps) => {
+export const ProductList = ({ onEdit, onDelete, onAdd }: ProductListProps) => {
+  // productsAtom에서 직접 구독
+  const products = useAtomValue(productsAtom);
+
   return (
     <>
       <div className="p-6 border-b border-gray-200">

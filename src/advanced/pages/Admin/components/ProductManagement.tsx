@@ -15,7 +15,7 @@ type ProductManagementProps = {
 export function ProductManagement({ addNotification }: ProductManagementProps) {
   const [showProductForm, setShowProductForm] = useState(false);
 
-  // useProducts hook에서 직접 가져오기
+  // useProducts hook에서 actions만 가져오기
   const products = useProducts({ onMessage: addNotification });
 
   const {
@@ -61,7 +61,6 @@ export function ProductManagement({ addNotification }: ProductManagementProps) {
   return (
     <section className="bg-white rounded-lg border border-gray-200">
       <ProductList
-        products={products.value}
         onEdit={handleEditProduct}
         onDelete={products.delete}
         onAdd={handleAddProduct}

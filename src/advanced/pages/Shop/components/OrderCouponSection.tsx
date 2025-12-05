@@ -1,18 +1,21 @@
+import { useAtomValue } from "jotai";
 import { Coupon } from "../../../../types";
+import { couponsAtom } from "../../../atoms";
 
 interface OrderCouponSectionProps {
-  coupons: Coupon[];
   selectedCoupon: Coupon | null;
   onApply: (coupon: Coupon) => void;
   onClear: () => void;
 }
 
 export const OrderCouponSection = ({
-  coupons,
   selectedCoupon,
   onApply,
   onClear,
 }: OrderCouponSectionProps) => {
+  // couponsAtom에서 직접 구독
+  const coupons = useAtomValue(couponsAtom);
+
   return (
     <section className="bg-white rounded-lg border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-3">

@@ -4,12 +4,7 @@ import { CartItemList } from "./CartItemList";
 import { OrderCouponSection } from "./OrderCouponSection";
 import { OrderSummary } from "./OrderSummary";
 import { EmptyCartIcon, ShoppingBagIcon } from "../../../components/icons";
-import {
-  cartAtom,
-  cartTotalsAtom,
-  selectedCouponAtom,
-  couponsAtom,
-} from "../../../atoms";
+import { cartAtom, cartTotalsAtom, selectedCouponAtom } from "../../../atoms";
 import { useCart } from "../../../hooks/useCart";
 
 interface CartSectionProps {
@@ -24,7 +19,6 @@ export const CartSection = ({ addNotification }: CartSectionProps) => {
   const cart = useAtomValue(cartAtom);
   const selectedCoupon = useAtomValue(selectedCouponAtom);
   const totals = useAtomValue(cartTotalsAtom);
-  const coupons = useAtomValue(couponsAtom);
 
   // useCart hook에서 필요한 함수만 가져오기
   const cartActions = useCart({
@@ -64,7 +58,6 @@ export const CartSection = ({ addNotification }: CartSectionProps) => {
       {cart.length > 0 && (
         <>
           <OrderCouponSection
-            coupons={coupons}
             selectedCoupon={selectedCoupon}
             onApply={cartActions.apply}
             onClear={cartActions.clearSelectedCoupon}
