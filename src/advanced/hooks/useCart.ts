@@ -153,15 +153,6 @@ export function useCart() {
     setSelectedCoupon(null);
   }, [setSelectedCoupon]);
 
-  const clearSelectedCouponByCode = useCallback(
-    (code: string) => {
-      if (selectedCoupon?.code === code) {
-        setSelectedCoupon(null);
-      }
-    },
-    [selectedCoupon, setSelectedCoupon]
-  );
-
   return {
     value: cart,
     selectedCoupon: selectedCoupon,
@@ -172,6 +163,5 @@ export function useCart() {
     apply: applyCoupon,
     clearCart: clearCart,
     clearSelectedCoupon: clearSelectedCoupon,
-    clearSelectedCouponByCode: clearSelectedCouponByCode,
   };
 }
