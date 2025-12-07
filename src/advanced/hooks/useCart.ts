@@ -24,7 +24,7 @@
 // - getRemainingStock: 재고 확인 함수 -
 // - clearCart: 장바구니 비우기 함수
 
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { Coupon, ProductWithUI } from "../../types";
 import {
@@ -32,6 +32,7 @@ import {
   cartItemCountAtom,
   selectedCouponAtom,
   productsAtom,
+  addNotificationAtom,
 } from "../atoms";
 import {
   calculateCartTotal,
@@ -39,21 +40,18 @@ import {
   removeItemFromCart,
 } from "../models/cart";
 
-export function useCart({
-  onMessage,
-}: {
-  onMessage: (message: string, type?: "error" | "success" | "warning") => void;
-}) {
+export function useCart() {
   const [cart, setCart] = useAtom(cartAtom);
   const [selectedCoupon, setSelectedCoupon] = useAtom(selectedCouponAtom);
   const totalItemCount = useAtomValue(cartItemCountAtom);
   const products = useAtomValue(productsAtom);
+  const addNotification = useSetAtom(addNotificationAtom);
 
   const addToCart = useCallback(
     (product: ProductWithUI) => {
       const remainingStock = getRemainingStock(product, cart);
       if (remainingStock <= 0) {
-        onMessage("재고가 부족합니다!", "error");
+        addNotification({ message: "재고가 부족합니다!", type: "error" });
         return;
       }
 
@@ -66,7 +64,10 @@ export function useCart({
           const newQuantity = existingItem.quantity + 1;
 
           if (newQuantity > product.stock) {
-            onMessage(`재고는 ${product.stock}개까지만 있습니다.`, "error");
+            addNotification({
+              message: `재고는 ${product.stock}개까지만 있습니다.`,
+              type: "error",
+            });
             return prevCart;
           }
 
@@ -80,9 +81,9 @@ export function useCart({
         return [...prevCart, { product, quantity: 1 }];
       });
 
-      onMessage("장바구니에 담았습니다", "success");
+      addNotification({ message: "장바구니에 담았습니다", type: "success" });
     },
-    [cart, onMessage, setCart]
+    [cart, addNotification, setCart]
   );
 
   const removeFromCart = useCallback(
@@ -104,7 +105,10 @@ export function useCart({
 
       const maxStock = product.stock;
       if (newQuantity > maxStock) {
-        onMessage(`재고는 ${maxStock}개까지만 있습니다.`, "error");
+        addNotification({
+          message: `재고는 ${maxStock}개까지만 있습니다.`,
+          type: "error",
+        });
         return;
       }
 
@@ -116,7 +120,7 @@ export function useCart({
         )
       );
     },
-    [products, removeFromCart, onMessage, setCart]
+    [products, removeFromCart, addNotification, setCart]
   );
 
   const applyCoupon = useCallback(
@@ -127,17 +131,17 @@ export function useCart({
       ).totalAfterDiscount;
 
       if (currentTotal < 10000 && coupon.discountType === "percentage") {
-        onMessage(
-          "percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.",
-          "error"
-        );
+        addNotification({
+          message: "percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.",
+          type: "error",
+        });
         return;
       }
 
       setSelectedCoupon(coupon);
-      onMessage("쿠폰이 적용되었습니다.", "success");
+      addNotification({ message: "쿠폰이 적용되었습니다.", type: "success" });
     },
-    [cart, selectedCoupon, onMessage, setSelectedCoupon]
+    [cart, selectedCoupon, addNotification, setSelectedCoupon]
   );
 
   const clearCart = useCallback(() => {

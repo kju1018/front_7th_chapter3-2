@@ -3,24 +3,17 @@ import { CartSection } from "./components/CartSection";
 
 interface ShopPageProps {
   searchTerm: string;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
 }
 
-export function ShopPage({ searchTerm, addNotification }: ShopPageProps) {
+export function ShopPage({ searchTerm }: ShopPageProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <div className="lg:col-span-3">
-        <ProductList
-          debouncedSearchTerm={searchTerm}
-          addNotification={addNotification}
-        />
+        <ProductList debouncedSearchTerm={searchTerm} />
       </div>
 
       <div className="lg:col-span-1">
-        <CartSection addNotification={addNotification} />
+        <CartSection />
       </div>
     </div>
   );

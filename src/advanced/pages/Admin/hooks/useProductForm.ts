@@ -1,20 +1,15 @@
 import { useState } from "react";
+import { useSetAtom } from "jotai";
 import { ProductWithUI } from "../../../../types";
+import { addNotificationAtom } from "../../../atoms";
 
 interface UseProductFormProps {
   onAdd: (product: Omit<ProductWithUI, "id">) => void;
   onUpdate: (id: string, product: Partial<ProductWithUI>) => void;
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
 }
 
-export const useProductForm = ({
-  onAdd,
-  onUpdate,
-  addNotification,
-}: UseProductFormProps) => {
+export const useProductForm = ({ onAdd, onUpdate }: UseProductFormProps) => {
+  const addNotification = useSetAtom(addNotificationAtom);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [productForm, setProductForm] = useState({
     name: "",
@@ -96,7 +91,7 @@ export const useProductForm = ({
     if (value === "") {
       updateFormField("price", 0);
     } else if (parseInt(value) < 0) {
-      addNotification("가격은 0보다 커야 합니다", "error");
+      addNotification({ message: "가격은 0보다 커야 합니다", type: "error" });
       updateFormField("price", 0);
     }
   };
@@ -106,10 +101,13 @@ export const useProductForm = ({
     if (value === "") {
       updateFormField("stock", 0);
     } else if (parseInt(value) < 0) {
-      addNotification("재고는 0보다 커야 합니다", "error");
+      addNotification({ message: "재고는 0보다 커야 합니다", type: "error" });
       updateFormField("stock", 0);
     } else if (parseInt(value) > 9999) {
-      addNotification("재고는 9999개를 초과할 수 없습니다", "error");
+      addNotification({
+        message: "재고는 9999개를 초과할 수 없습니다",
+        type: "error",
+      });
       updateFormField("stock", 9999);
     }
   };

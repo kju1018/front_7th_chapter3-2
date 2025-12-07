@@ -1,18 +1,14 @@
 import { useState } from "react";
+import { useSetAtom } from "jotai";
 import { Coupon } from "../../../../types";
+import { addNotificationAtom } from "../../../atoms";
 
 interface UseCouponFormProps {
   onAddCoupon: (newCoupon: Coupon) => void;
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
 }
 
-export const useCouponForm = ({
-  onAddCoupon,
-  addNotification,
-}: UseCouponFormProps) => {
+export const useCouponForm = ({ onAddCoupon }: UseCouponFormProps) => {
+  const addNotification = useSetAtom(addNotificationAtom);
   const [couponForm, setCouponForm] = useState<Coupon>({
     name: "",
     code: "",
@@ -74,14 +70,20 @@ export const useCouponForm = ({
     const value = parseInt(e.target.value) || 0;
     if (couponForm.discountType === "percentage") {
       if (value > 100) {
-        addNotification("할인율은 100%를 초과할 수 없습니다", "error");
+        addNotification({
+          message: "할인율은 100%를 초과할 수 없습니다",
+          type: "error",
+        });
         setCouponForm((prev) => ({ ...prev, discountValue: 100 }));
       } else if (value < 0) {
         setCouponForm((prev) => ({ ...prev, discountValue: 0 }));
       }
     } else {
       if (value > 100000) {
-        addNotification("할인 금액은 100,000원을 초과할 수 없습니다", "error");
+        addNotification({
+          message: "할인 금액은 100,000원을 초과할 수 없습니다",
+          type: "error",
+        });
         setCouponForm((prev) => ({ ...prev, discountValue: 100000 }));
       } else if (value < 0) {
         setCouponForm((prev) => ({ ...prev, discountValue: 0 }));

@@ -8,20 +8,13 @@ import { filterProductsBySearchTerm } from "../../../models/product";
 
 interface ProductListProps {
   debouncedSearchTerm: string;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
 }
 
-export const ProductList = ({
-  debouncedSearchTerm,
-  addNotification,
-}: ProductListProps) => {
+export const ProductList = ({ debouncedSearchTerm }: ProductListProps) => {
   // products와 cart를 직접 구독
   const products = useAtomValue(productsAtom);
   const cart = useAtomValue(cartAtom);
-  const { add: addToCart } = useCart({ onMessage: addNotification });
+  const { add: addToCart } = useCart();
 
   // 필터링된 상품 목록 계산
   const filteredProducts = useMemo(

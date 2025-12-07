@@ -3,14 +3,7 @@ import { TabNavigation } from "./components/TabNavigation";
 import { ProductManagement } from "./components/ProductManagement";
 import { CouponManagement } from "./components/CouponManagement";
 
-type AdminPageProps = {
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
-};
-
-export function AdminPage({ addNotification }: AdminPageProps) {
+export function AdminPage() {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
@@ -24,9 +17,9 @@ export function AdminPage({ addNotification }: AdminPageProps) {
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {activeTab === "products" ? (
-        <ProductManagement addNotification={addNotification} />
+        <ProductManagement />
       ) : (
-        <CouponManagement addNotification={addNotification} />
+        <CouponManagement />
       )}
     </div>
   );

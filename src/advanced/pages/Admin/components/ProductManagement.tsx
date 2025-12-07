@@ -5,18 +5,11 @@ import { ProductForm } from "./ProductForm";
 import { ProductList } from "./ProductList";
 import { useProducts } from "../../../hooks/useProducts";
 
-type ProductManagementProps = {
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
-};
-
-export function ProductManagement({ addNotification }: ProductManagementProps) {
+export function ProductManagement() {
   const [showProductForm, setShowProductForm] = useState(false);
 
   // useProducts hook에서 actions만 가져오기
-  const products = useProducts({ onMessage: addNotification });
+  const products = useProducts();
 
   const {
     productForm,
@@ -40,7 +33,6 @@ export function ProductManagement({ addNotification }: ProductManagementProps) {
       products.update(id, product);
       setShowProductForm(false);
     },
-    addNotification,
   });
 
   const handleEditProduct = (product: ProductWithUI) => {

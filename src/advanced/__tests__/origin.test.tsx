@@ -1,13 +1,20 @@
 // @ts-nocheck
 import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
+import { getDefaultStore } from 'jotai';
 import App from '../App';
 import '../../setupTests';
+import { notificationsAtom } from '../atoms';
 
 describe('쇼핑몰 앱 통합 테스트', () => {
   beforeEach(() => {
     // localStorage 초기화
     localStorage.clear();
+    
+    // Jotai atom 초기화 (알림 상태 초기화)
+    const store = getDefaultStore();
+    store.set(notificationsAtom, []);
+    
     // console 경고 무시
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.spyOn(console, 'log').mockImplementation(() => {});

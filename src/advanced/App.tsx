@@ -11,7 +11,6 @@ import Notifications from "./components/Notifications";
 import { AdminPage } from "./pages/Admin/AdminPage";
 import { ShopPage } from "./pages/Shop/ShopPage";
 
-import { useNotifications } from "./hooks/useNotifications";
 import { useDebounce } from "./utils/hooks/useDebounce";
 
 const App = () => {
@@ -19,15 +18,9 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { notifications, addNotification, setNotifications } =
-    useNotifications();
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <Notifications
-        notifications={notifications}
-        setNotifications={setNotifications}
-      />
+      <Notifications />
       <Header
         isAdmin={isAdmin}
         onAdminToggle={() => setIsAdmin((prev) => !prev)}
@@ -37,12 +30,9 @@ const App = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {isAdmin ? (
-          <AdminPage addNotification={addNotification} />
+          <AdminPage />
         ) : (
-          <ShopPage
-            searchTerm={debouncedSearchTerm}
-            addNotification={addNotification}
-          />
+          <ShopPage searchTerm={debouncedSearchTerm} />
         )}
       </main>
     </div>

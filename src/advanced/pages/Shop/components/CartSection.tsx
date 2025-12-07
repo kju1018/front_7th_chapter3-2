@@ -1,36 +1,33 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { CartItemList } from "./CartItemList";
 import { OrderCouponSection } from "./OrderCouponSection";
 import { OrderSummary } from "./OrderSummary";
 import { EmptyCartIcon, ShoppingBagIcon } from "../../../components/icons";
-import { cartAtom, cartTotalsAtom, selectedCouponAtom } from "../../../atoms";
+import {
+  cartAtom,
+  cartTotalsAtom,
+  selectedCouponAtom,
+  addNotificationAtom,
+} from "../../../atoms";
 import { useCart } from "../../../hooks/useCart";
 
-interface CartSectionProps {
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
-}
-
-export const CartSection = ({ addNotification }: CartSectionProps) => {
+export const CartSection = () => {
   // Jotai atoms 직접 사용
   const cart = useAtomValue(cartAtom);
   const selectedCoupon = useAtomValue(selectedCouponAtom);
   const totals = useAtomValue(cartTotalsAtom);
+  const addNotification = useSetAtom(addNotificationAtom);
 
   // useCart hook에서 필요한 함수만 가져오기
-  const cartActions = useCart({
-    onMessage: addNotification,
-  });
+  const cartActions = useCart();
 
   const completeOrder = useCallback(() => {
     const orderNumber = `ORD-${Date.now()}`;
-    addNotification(
-      `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
-      "success"
-    );
+    addNotification({
+      message: `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
+      type: "success",
+    });
     cartActions.clearCart();
   }, [addNotification, cartActions]);
 

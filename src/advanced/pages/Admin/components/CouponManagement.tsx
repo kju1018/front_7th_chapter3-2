@@ -1,37 +1,15 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { PlusIcon } from "../../../components/icons";
 import { useCouponForm } from "../hooks/useCouponForm";
 import { CouponForm } from "./CouponForm";
 import { CouponCard } from "./CouponCard";
 import { useCoupons } from "../../../hooks/useCoupons";
-import { useAtomValue, useSetAtom } from "jotai";
-import { selectedCouponAtom } from "../../../atoms";
 
-type CouponManagementProps = {
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
-};
-
-export function CouponManagement({ addNotification }: CouponManagementProps) {
+export function CouponManagement() {
   const [showCouponForm, setShowCouponForm] = useState(false);
 
   // useCoupons hook에서 직접 가져오기
-  const setSelectedCoupon = useSetAtom(selectedCouponAtom);
-  const selectedCoupon = useAtomValue(selectedCouponAtom);
-
-  const coupons = useCoupons({
-    onMessage: addNotification,
-    onDeleteSelectedCoupon: useCallback(
-      (deletedCode) => {
-        if (selectedCoupon?.code === deletedCode) {
-          setSelectedCoupon(null);
-        }
-      },
-      [selectedCoupon, setSelectedCoupon]
-    ),
-  });
+  const coupons = useCoupons();
 
   const {
     couponForm,
@@ -47,7 +25,6 @@ export function CouponManagement({ addNotification }: CouponManagementProps) {
       coupons.add(newCoupon);
       setShowCouponForm(false);
     },
-    addNotification,
   });
 
   return (
